@@ -1,0 +1,76 @@
+steps while using django:
+
+1.virtualenv newapp1
+2.newapp1\scripts\activate
+3.pip install django==2.2
+4.django-admin startproject mynewapp ....(__init__.py,settings.py,urls.py,wsgi.py) outside manage.py
+5.cd mynewapp
+6.python manage.py runserver   ......#working website
+creating app
+7.python manage.py startapp polls ...(__init__.py, admin.py, apps.py, models.py, tests.py, views.py)
+go to view.py
+8.from django.http import HttpResponse
+9.create functions inside it
+eg:
+def index(request):
+	return HttpResponse("hello i m here from polls of index")
+10.create a new file urls.py inside the app polls.
+   from django.urls import path
+   from . import views
+   inside of urlpatterns type:  path('',views.index,name='index'),
+11.go to urls.py in mynewapp
+   from django.urls import include,path ....#add include in the import statement.
+   inside of urlpatterns type:  path('polls/',include('polls.urls)),
+12.python manage.py runserver
+   check:
+   http://127.0.0.1:8000/pollls/  ....#if it returns the value in def of views
+13.now check the setting.py in mynewapp to see for the 
+    database used(sqlite3 by default)
+    installed app
+    to check the installed apps work use .... python manage.py migrate
+14.go to models.py in polls and create class for creating tables in database.
+    eg:
+     class Question(models.Model):
+           question_txt=models.Charfield(max_length=200)
+           pub_date=models.DateTimeField("date published")
+     class choice(models.Model):
+           question=models.foreignkey(Question, on_delete=models.CASCADE)
+
+15.go to settings.py and the go to installed apps and give
+       'polls.apps.pollsconfig',
+	or
+	'polls'
+      it refers to polls(the created)-->apps.py(file inside it)-->pollsConfig(function inside apps.py file)
+16.python manage.py makemigrations
+17.python manage.py migrate
+18.python manage.py shell   ....# for interacting with the database 
+[we can do the same in the models.py with different def sections]
+   write the below:eg:
+	-from polls.models import Choice,Question
+	-Question.objects.all()
+	-from django.utils import timezone
+	-q=Quextion(question_text = "Whats new?",pub_date=timezone.now())
+	-q.save()
+	-q.id
+	1
+	-q.question_text 
+	whats new?
+19.python manage.py createsuperuser
+    give username and password
+20.python manage.py runserver
+21. go to app polls so that the things given in models show up in admin page
+     admin.py
+     from .models import Choice,Question  ....# import the class that were in models.py
+     admin.site.register(Question) 
+22.create a folder named templates inside app created.
+23.create folder with the name of the app created and create file name index.html inside of it.
+    index.html contains html tags and with the formats like
+	{% if it contains %}
+		{% for the given %}
+		it contains the <li> and <href=...> tags to the things in the models file.
+24. go to views.py and give a return statement pointing to index.html
+      return render(request,'polls/index.html()')
+25.create another html file for creating form with post method and csrf token.
+     
+
+
